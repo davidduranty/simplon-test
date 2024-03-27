@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState } from "react";
+import "./styles/index.scss";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [getData, setGetData] = useState({});
+  const [search, setSearch] = useState("");
+
+  const api = {
+    key: "97a26641079e46394fae11442be0ffc4",
+    base: "https://api.openweathermap.org/data/2.5/",
+  };
+
+  const searchPressed = async () => {
+    try {
+      const res = await axios.get(
+        `${api.base}weather?q=${search}&units=metric&APPID=${api.key}`
+      );
+      setGetData(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.error("message: " + error.message);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="main">
+      <div className="input-search">
+        <input type="text" onChange={(e) => setSearch(e.target.value)} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <h1>{search}</h1>
+      <div className="card-container">{getData.main.temp}</div>
+      <button onClick={searchPressed}>search</button>
+    </div>
+  );
 }
 
-export default App
+export default App;
